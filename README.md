@@ -1,6 +1,5 @@
 # Kaleidoscope :telescope:
 ![C++](https://img.shields.io/badge/c++-%2300599C.svg?style=for-the-badge&logo=c%2B%2B&logoColor=white)
-![LLVM Contributor](https://img.shields.io/badge/LLVM_Contributor-red)
 
 This is a toy programming language and its compiler made with [LLVM](https://llvm.org/) and C++. The project isn't finished yet (still in progress). So far, I have implemented all of the frontend components the language needs:
 - Lexing
