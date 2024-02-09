@@ -8,4 +8,10 @@ This is a toy programming language and its compiler made with [LLVM](https://llv
 
 I also did the code the generation part to generate the [LLVM IR (LLVM Intermediate Representation)](https://llvm.org/docs/LangRef.html). Finally I added a [JIT](https://en.wikipedia.org/wiki/Just-in-time_compilation) Driver so I can see the IR generated.
 
+<div class="note">
+
+### Note
+    This is just something I made to teach myself more about compilers in general and the LLVM compiler infrastructure in particular, so I didn't follow software best practices.
+</div>
+
 
