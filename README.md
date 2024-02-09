@@ -6,6 +6,6 @@ This is a toy programming language and its compiler made with LLVM and C++. The 
 - Abstract Syntax Tree (AST)
 - Parsing
 
-I also did the code generation part with the **codegen** methods to generate the [LLVM IR (LLVM Intermediate Representation)](https://llvm.org/docs/LangRef.html). Finally I added a [JIT](https://en.wikipedia.org/wiki/Just-in-time_compilation) Driver so I can see the IR generated.
+I also did the code the generation part with the **codegen** methods to generate the [LLVM IR (LLVM Intermediate Representation)](https://llvm.org/docs/LangRef.html). Finally I added a [JIT](https://en.wikipedia.org/wiki/Just-in-time_compilation) Driver so I can see the IR generated.
 
 
