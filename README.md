@@ -17,10 +17,11 @@ And Finally I Added additional [Optimizers](https://en.wikipedia.org/wiki/Optimi
 - [Dead-Code Elimination](https://en.wikipedia.org/wiki/Dead-code_elimination)
 
 ## Optimization Example
-#### Before adding optimization
+### Before adding optimization
+You can see in the next screenshot that the function basically computes \( (x + 3)^2 \), but notice that the compiler instead of calculating \( (x + 3) \) once then squaring the result what it actually does is computing it twice and the first time it stores in **addtmp** and the other in **addtmp1**.  
 ![Screenshot from 2024-02-10 23-47-22](https://github.com/OmarAzizi/Kaleidoscope/assets/110500643/7e7d9146-1a1b-44a8-bde7-313bd3290b54)
 
-#### After adding optimization
+### After adding optimization
 ![Screenshot from 2024-02-11 00-18-45](https://github.com/OmarAzizi/Kaleidoscope/assets/110500643/6481a5c5-2db0-4a27-9eb0-7e8246a77823)
 
 ### Note
