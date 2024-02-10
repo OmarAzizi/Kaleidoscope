@@ -24,7 +24,7 @@ As you can see in this screenshot that the function I defined basically computes
 ![Screenshot from 2024-02-10 23-47-22](https://github.com/OmarAzizi/Kaleidoscope/assets/110500643/7e7d9146-1a1b-44a8-bde7-313bd3290b54)
 
 ### After adding optimization
-This screenshot shows the same function definition from earlier after I added the **Common Subexpression Elimination** optimization technique:
+This screenshot shows the same function definition from earlier after I added the **Common Subexpression Elimination** optimization:
 
 
 ![Screenshot from 2024-02-11 00-18-45](https://github.com/OmarAzizi/Kaleidoscope/assets/110500643/6481a5c5-2db0-4a27-9eb0-7e8246a77823)
