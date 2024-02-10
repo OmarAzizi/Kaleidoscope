@@ -76,7 +76,7 @@ int gettok() {
     
     // Number: [0-9.]+
     if (isdigit(lastChar) || lastChar == '.') {
-        std::string numStr;
+        std::string numStr = "";
         
         do {
             numStr += lastChar;
@@ -125,90 +125,91 @@ int gettok() {
 
 // base class for all expression nodes in the AST 
 // Note: This is an abstract class
-class ExprAST {
-public:
-    virtual ~ExprAST() = default;
-    
-     /*
-        The codegen() method says to emit IR for that AST node along with all the 
-        things it depends on, and they all return an LLVM Value object. 
+namespace {
+    class ExprAST {
+    public:
+        virtual ~ExprAST() = default;
         
-        “Value” is the class used to represent a 
-        “Static Single Assignment (SSA) register” 
-        or “SSA value” in LLVM. 
+        /*
+            The codegen() method says to emit IR for that AST node along with all the 
+            things it depends on, and they all return an LLVM Value object. 
+            
+            “Value” is the class used to represent a 
+            “Static Single Assignment (SSA) register” 
+            or “SSA value” in LLVM. 
+        */
+        virtual Value* codegen() = 0;
+    };
+
+    // number node
+    class NumberExprAST : public ExprAST {
+        double Val;
+        
+    public:
+        NumberExprAST(double Val) : Val(Val) {}
+        Value* codegen() override;
+    };
+
+    // variable/identifier node
+    class VariableExprAST : public ExprAST {
+        std::string Name;
+
+    public:
+        VariableExprAST(const std::string &Name) : Name(Name) {}
+        Value* codegen() override;
+    };
+
+    // binary expression node
+    class BinaryExprAST : public ExprAST {
+        char Op; // operator of binary expr (e.g. '+', '-', '*', '/')
+        std::unique_ptr<ExprAST> LHS, RHS; // left & right hand sides of the expression (e.g. operands)
+
+    public:
+        BinaryExprAST(char Op, std::unique_ptr<ExprAST> LHS, std::unique_ptr<ExprAST> RHS) 
+            : Op(Op), LHS(std::move(LHS)), RHS(std::move(RHS)) {}
+        Value* codegen() override;
+    };
+
+    class CallExprAST : public ExprAST {
+        std::string Callee;
+        std::vector<std::unique_ptr<ExprAST>> Args;
+
+    public:
+        CallExprAST(const std::string &Callee, std::vector<std::unique_ptr<ExprAST>> Args) 
+            : Callee(Callee), Args(std::move(Args)) {}
+        Value* codegen() override;
+    };
+
+
+    /* 
+        PrototypeAST - This class represents the "prototype" for a function,
+        which captures its name, and its argument names (thus implicitly the number
+        of arguments the function takes).
     */
-    virtual Value* codegen() = 0;
-};
 
-// number node
-class NumberExprAST : public ExprAST {
-    double Val;
-    
-public:
-    NumberExprAST(double Val) : Val(Val) {}
-    Value* codegen() override;
-};
+    class PrototypeAST {
+        std::string Name;
+        std::vector<std::string> Args;
 
-// variable/identifier node
-class VariableExprAST : public ExprAST {
-    std::string Name;
+    public:
+        PrototypeAST(const std::string &Name, std::vector<std::string> Args) 
+            : Name(Name), Args(std::move(Args)) {}
+        
+        const std::string &getName() const { return Name; }
+        Function* codegen();
+    };
 
-public:
-    VariableExprAST(const std::string &Name) : Name(Name) {}
-    Value* codegen() override;
-};
+    // FunctionAST - This class represents a function definition itself.
+    class FunctionAST {
+        std::unique_ptr<PrototypeAST> Proto;
+        std::unique_ptr<ExprAST> Body;
 
-// binary expression node
-class BinaryExprAST : public ExprAST {
-    char Op; // operator of binary expr (e.g. '+', '-', '*', '/')
-    std::unique_ptr<ExprAST> LHS, RHS; // left & right hand sides of the expression (e.g. operands)
-
-public:
-    BinaryExprAST(char Op, std::unique_ptr<ExprAST> LHS, std::unique_ptr<ExprAST> RHS) 
-        : Op(Op), LHS(std::move(LHS)), RHS(std::move(RHS)) {}
-    Value* codegen() override;
-};
-
-class CallExprAST : public ExprAST {
-    std::string Callee;
-    std::vector<std::unique_ptr<ExprAST>> Args;
-
-public:
-    CallExprAST(const std::string &Callee, std::vector<std::unique_ptr<ExprAST>> Args) 
-        : Callee(Callee), Args(std::move(Args)) {}
-    Value* codegen() override;
-};
-
-
-/* 
-    PrototypeAST - This class represents the "prototype" for a function,
-    which captures its name, and its argument names (thus implicitly the number
-    of arguments the function takes).
-*/
-
-class PrototypeAST {
-    std::string Name;
-    std::vector<std::string> Args;
-
-public:
-    PrototypeAST(const std::string &Name, std::vector<std::string> Args) 
-        : Name(Name), Args(std::move(Args)) {}
-    
-    const std::string &getName() const { return Name; }
-    Function* codegen();
-};
-
-// FunctionAST - This class represents a function definition itself.
-class FunctionAST {
-    std::unique_ptr<PrototypeAST> Proto;
-    std::unique_ptr<ExprAST> Body;
-
-public:
-    FunctionAST(std::unique_ptr<PrototypeAST> Proto, std::unique_ptr<ExprAST> Body)
-        : Proto(std::move(Proto)), Body(std::move(Body)) {}
-    Function* codegen();
-};
-
+    public:
+        FunctionAST(std::unique_ptr<PrototypeAST> Proto, std::unique_ptr<ExprAST> Body)
+            : Proto(std::move(Proto)), Body(std::move(Body)) {}
+        Function* codegen();
+    };
+}
 
 
 
@@ -363,8 +364,7 @@ static std::unique_ptr<ExprAST> ParseBinOpRHS(int ExprPrec, std::unique_ptr<Expr
     }
 
     // Merge LHS/RHS.
-    LHS =
-        std::make_unique<BinaryExprAST>(BinOp, std::move(LHS), std::move(RHS));
+    LHS = std::make_unique<BinaryExprAST>(BinOp, std::move(LHS), std::move(RHS));
   }
 }
 
@@ -449,8 +449,8 @@ static std::unique_ptr<PrototypeAST> ParseExtern() {
 */
 
 static std::unique_ptr<LLVMContext> TheContext; 
-static std::unique_ptr<IRBuilder<>> Builder; 
 static std::unique_ptr<Module> TheModule; // This will own the memory of all the IR we generate
+static std::unique_ptr<IRBuilder<>> Builder; 
 static std::map<std::string, Value*> NamedValues; // keeps track of which values are defined in the current
                                                   // scope and what their LLVM representation (e.g. It is a symbol table)
 
@@ -521,7 +521,7 @@ Value* CallExprAST::codegen() {
 
     std::vector<Value*> ArgsV; // will store the LLVM IR for the function arguments
 
-    for (int i = 0; i < e; ++i) {
+    for (unsigned i = 0; i != e; ++i) {
         ArgsV.push_back(Args[i]->codegen());
 
         if (!ArgsV.back()) return nullptr;
@@ -547,7 +547,7 @@ Function* PrototypeAST::codegen() {
         doubles as arguments.
     */
     std::vector<Type*> Doubles(Args.size(), Type::getDoubleTy(*TheContext));
-    FunctionType* FT = FunctionType::get(Type::getVoidTy(*TheContext), Doubles, false);
+    FunctionType* FT = FunctionType::get(Type::getDoubleTy(*TheContext), Doubles, false);
 
     Function* F = Function::Create(FT, Function::ExternalLinkage, Name, TheModule.get()); // creates the IR Function 
                                                                                           // corresponding to the Prototype.
@@ -577,9 +577,6 @@ Function* FunctionAST::codegen() {
         TheFunction = Proto->codegen();
 
     if (!TheFunction) return nullptr;
-
-    if (!TheFunction->empty())
-        return (Function*)LogErrorV("Function cannot be redefined;");
 
     // Create new basic block to start insertion into
     BasicBlock* BB = BasicBlock::Create(*TheContext, "entry", TheFunction);
