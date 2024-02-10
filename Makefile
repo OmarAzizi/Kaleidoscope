@@ -1,6 +1,5 @@
 CLANG = clang++
-CLANG_FLAGS = -g -O3
-LLVM = `llvm-config --cxxflags --ldflags --system-libs --libs core` 
+LLVM = `llvm-config --cxxflags --ldflags --system-libs --libs core orcjit native`
 
 kaleidoscope:
-	$(CLANG) $(CLANG_FLAGS) kaleidoscope.cpp $(LLVM) -o kaleidoscope 
+	$(CLANG) -g kaleidoscope.cpp $(LLVM) -O3 -o kaleidoscope 
