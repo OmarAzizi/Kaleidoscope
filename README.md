@@ -16,7 +16,9 @@ And Finally I Added additional [Optimizers](https://en.wikipedia.org/wiki/Optimi
 - [Peephole Optimization](https://en.wikipedia.org/wiki/Peephole_optimization)
 - [Dead-Code Elimination](https://en.wikipedia.org/wiki/Dead-code_elimination)
 
+## Optimization Example
+
 ### Note
-This is just something I made to teach myself more about compilers in general and the LLVM compiler infrastructure in particular, so I didn't follow software best practices and its not production ready.
+This is just something I made to teach myself more about compilers in general and the LLVM compiler infrastructure in particular, so I didn't follow software engineering best practices and its not production ready.
 
 
