@@ -18,7 +18,7 @@ And Finally I Added additional [Optimizers](https://en.wikipedia.org/wiki/Optimi
 
 ## Optimization Example
 ### Before adding optimization
-This screenshot the corresponding LLVM IR for the function I defined, the function basically computes $(x + 3)^2$, but notice in the IR that the compiler instead of calculating $(x + 3)$ once then squaring the result, what it actually does is computing it twice, the first time it stores it in **addtmp** and the other in **addtmp1**:
+This screenshot shows the corresponding LLVM IR for the function I defined, the function basically computes $(x + 3)^2$, but notice in the IR that the compiler instead of calculating $(x + 3)$ once then squaring the result, what it actually does is computing it twice, the first time it stores it in **addtmp** and the other in **addtmp1**:
 
 
 ![Screenshot from 2024-02-10 23-47-22](https://github.com/OmarAzizi/Kaleidoscope/assets/110500643/7e7d9146-1a1b-44a8-bde7-313bd3290b54)
