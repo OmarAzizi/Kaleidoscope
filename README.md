@@ -18,13 +18,13 @@ And Finally I Added additional [Optimizers](https://en.wikipedia.org/wiki/Optimi
 
 ## Optimization Example
 ### Before adding optimization
-As you can see in this screenshot that the function I defined basically computes $(x + 3)^2$, but notice that the compiler instead of calculating $(x + 3)$ once then squaring the result, what it actually does is computing it twice, the first time it stores in **addtmp** and the other in **addtmp1**:
+This screenshot the corresponding LLVM IR for the function I defined, the function basically computes $(x + 3)^2$, but notice in the IR that the compiler instead of calculating $(x + 3)$ once then squaring the result, what it actually does is computing it twice, the first time it stores it in **addtmp** and the other in **addtmp1**:
 
 
 ![Screenshot from 2024-02-10 23-47-22](https://github.com/OmarAzizi/Kaleidoscope/assets/110500643/7e7d9146-1a1b-44a8-bde7-313bd3290b54)
 
 ### After adding optimization
-This screenshot shows the same function definition from earlier after I added the **Common Subexpression Elimination** optimization:
+This screenshot shows the IR for the same function definition from earlier after I added the **Common Subexpression Elimination** optimization:
 
 
 ![Screenshot from 2024-02-11 00-18-45](https://github.com/OmarAzizi/Kaleidoscope/assets/110500643/6481a5c5-2db0-4a27-9eb0-7e8246a77823)
